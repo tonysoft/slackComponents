@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Slack Component Test</title>
+        <meta charset="utf-8">
+
+        <script>
+            var origCustomElementsDefine = customElements.define.bind(customElements);
+            customElements.define = function(name, target) {
+                customElements.get(name) || origCustomElementsDefine(name, target);
+            };
+        </script>
+        <style>
+            .editor {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <script type="module">
+            //import './js/download-component-bundle.js'
+            import "./svelte/js/slackify-markdown-bundle.js"
+            import './svelte/slackSection.js'
+            var slackifyMarkdown = slackifySomeMarkdown;
+            const markdown = `
+# List of items
+
+* item 1
+* item 2
+* item 3
+
+[here is an example](https://example.com)
+`;
+var slackMarkdown = slackifyMarkdown(markdown);
+console.log(slackMarkdown);
+console.log(slackifyMarkdown("[here is an example](https://example.com)"));
+            
+        </script>
+    </head>
+
+    <body style="margin: 0;">
+        <slack-section/>
+    </body>
+</html>

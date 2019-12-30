@@ -1,0 +1,159 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2019 Tony Sukiennik. All rights reserved.
+-->
+<html>
+<head>
+  <title>Slack BlockKit Demo</title>
+  <style>
+    body {
+        font-family: Slack-Lato, appleLogo, sans-serif;
+    }
+  </style>
+  <link rel="stylesheet" href="./svelte/css/slackBlockKit.css">
+  <link rel="stylesheet" href="./svelte/css/slackBlockKitBuilder.css">
+  <link rel="stylesheet" href="./svelte/css/rollup-slack_kit_base.css">
+  <script type="module">
+        //import '../node_modules/tonysoft/markdown-editor.js?module'
+  </script>
+  <style>
+  </style>
+</head>
+<body style="overflow: hidden; margin: 0px;">
+    <div style="width: 600px; border: 1px solid black; padding: 20px;">
+            <div class="p-block_kit_renderer__block_wrapper"><div data-qa="bk_section_block" class="p-section_block p-section_block--no_top_margin"><div class="p-section_block_text_content"><div class="p-section_block__text"><div class="p-mrkdwn_element"><span dir="auto">This is a mrkdwn section block <span role="img" aria-label="ghost emoji" class="emoji emoji-sizer" data-codepoints="1f47b" delay="300" aria-describedby="slack-kit-tooltip" style="background-image: url(&quot;https://a.slack-edge.com/37d58/img/emoji_2017_12_06/apple/1f47b.png&quot;);">:ghost:</span> <b data-stringify-prefix="*" data-stringify-suffix="*" data-stringify-requires-siblings="true">this is bold</b>, and <strike data-stringify-prefix="~" data-stringify-suffix="~" data-stringify-requires-siblings="true">this is crossed out</strike>, and <a target="_blank" class="c-link" href="https://slack-redir.net/link?url=https%3A%2F%2Fgoogle.com" rel="noopener noreferrer">this is a link</a></span></div></div></div></div></div>
+        <span class="c-label c-label__subtext">
+            <div class="p-mrkdwn_element">
+                <span dir="auto">Description for option 1</span>
+            </div>
+        </span>
+        <div class="p-context_block">
+            <div class="p-context_block_element">
+                <div class="p-mrkdwn_element p-context_block__text">
+                    <span dir="auto">Last updated: Jan 1, 2019</span>
+                </div>
+                <div class="p-context_block_spacing--mrkdwn"></div>
+            </div>
+        </div>
+        <div class="p-block_kit_builder_preview__rendered-block">
+            <div class="p-block_kit_renderer__block_wrapper">
+                <div data-qa="bk_divider_block" class="p-divider_block"></div>
+            </div>
+        </div>
+        <div data-qa="bk_actions_block" class="p-actions_block">
+            <div class="p-actions_block_elements">
+                <div class="p-actions_block__action" data-qa="bk_actions_block_action">
+                    <button class="c-button c-button--outline c-button--small p-block_kit_button_element null--outline null--small" type="button" data-qa-block-id="l07=" data-qa-action-id="2JA2A">
+                        <div class="p-plain_text_element" data-qa="bk-plain_text_element">
+                            <span dir="auto">Button1</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div data-qa="bk_section_block" class="p-section_block">
+            <div class="p-section_block__accessory">
+                <button class="c-button c-button--outline c-button--small p-block_kit_button_element null--outline null--small" type="button" data-qa-block-id="TZl" data-qa-action-id="uPH">
+                    <div class="p-plain_text_element" data-qa="bk-plain_text_element">
+                        <span dir="auto">Button</span>
+                    </div>
+                </button>
+                <div class="p-section_block__icons"></div>
+            </div>
+            <div class="p-section_block_text_content">
+                <div class="p-section_block__text">
+                    <div class="p-mrkdwn_element">
+                        <span dir="auto">You can add a button alongside text in your message.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-qa="bk_section_block" class="p-section_block">
+            <div class="p-section_block__accessory">
+                <div class="c-search-select" data-qa="AAi">
+                    <div class="c-select_input__wrapper c-select_input--small c-select_input--with_icon" role="group" data-qa="AAi-wrapper" style="width: 190px;">
+                        <div class="c-select_input__input_container">
+                            <input aria-autocomplete="list" aria-expanded="false" aria-owns="AAi-yQo_listbox" aria-required="false" aria-labelledby="" aria-describedby="" autocomplete="off" data-qa="AAi-input" role="combobox" aria-invalid="false" aria-label="" class="c-input_text c-select_input" id="AAi-yQo" name="AAi-yQo" placeholder="Select an item" type="text" value="">
+                            <div class="c-select_input__content" data-qa="AAi-input-content">
+                                <span class="c-select_input__content_text"></span>
+                            </div>
+                        </div>
+                        <div class="c-select_input__icon_container">
+                            <i class="c-icon c-icon--chevron-down c-icon--inline" type="chevron-down" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-section_block__icons"></div>
+            </div>
+            <div class="p-section_block_text_content">
+                <div class="p-section_block__text">
+                    <div class="p-mrkdwn_element">
+                        <span dir="auto">Pick an item from the dropdown list</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ReactModal__Content ReactModal__Content--after-open popover" tabindex="-1" role="presentation" style="position: absolute; left: 528px; top: 391.203px; outline: none; transition-duration: 80ms;">
+            <div role="presentation">
+                <div class="c-select_options_list__wrapper" data-qa="AAi-options-list-wrapper">
+                    <div class="c-select_options_list" data-qa="AAi-options-list" id="AAi-yQo_listbox" aria-label="Select an item" aria-multiselectable="false" role="listbox" tabindex="-1">
+                        <div aria-label="" aria-readonly="true" class="ReactVirtualized__Grid ReactVirtualized__List c-select_options_list__virtual_list" role="presentation" style="box-sizing: content-box; direction: ltr; height: 84px; position: relative; width: 322px; will-change: transform; overflow: hidden; padding: 12px 0px;">
+                            <div class="ReactVirtualized__Grid__innerScrollContainer" role="presentation" style="width: auto; height: 84px; max-width: 322px; max-height: 84px; overflow: visible; position: relative;">
+                                <div aria-selected="false" class="c-select_options_list__option" data-qa="AAi_option_0" id="AAi-yQo_option_0" role="option" tabindex="-1" style="height: 28px; left: 0px; position: absolute; top: 0px; width: 100%;">
+                                    <span class="c-select_options_list__option_label">
+                                        <div class="p-block-kit-select_options">
+                                            <div class="p-plain_text_element" data-qa="bk-plain_text_element">
+                                                <span dir="auto">Choice 1</span>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div aria-selected="false" class="c-select_options_list__option" data-qa="AAi_option_1" id="AAi-yQo_option_1" role="option" tabindex="-1" style="height: 28px; left: 0px; position: absolute; top: 28px; width: 100%;">
+                                    <span class="c-select_options_list__option_label">
+                                        <div class="p-block-kit-select_options">
+                                            <div class="p-plain_text_element" data-qa="bk-plain_text_element">
+                                                <span dir="auto">Choice 2</span>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div aria-selected="false" class="c-select_options_list__option" data-qa="AAi_option_2" id="AAi-yQo_option_2" role="option" tabindex="-1" style="height: 28px; left: 0px; position: absolute; top: 56px; width: 100%;">
+                                    <span class="c-select_options_list__option_label">
+                                        <div class="p-block-kit-select_options">
+                                            <div class="p-plain_text_element" data-qa="bk-plain_text_element">
+                                                <span dir="auto">Choice 3</span>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div data-qa="bk_section_block" class="p-section_block">
+            <div class="p-section_block__accessory">
+                <button class="c-button c-button--outline c-button--small p-block_kit_overflow_element__button null--outline null--small" type="button" aria-haspopup="true">
+                    <i class="c-icon c-icon--ellipsis" type="ellipsis" aria-hidden="true"></i>
+                </button>
+                <div class="p-section_block__icons"></div>
+            </div>
+            <div class="p-section_block_text_content">
+                <div class="p-section_block__text">
+                    <div class="p-mrkdwn_element">
+                        <span dir="auto">This block has an overflow menu.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ReactModal__Content ReactModal__Content--after-open popover" tabindex="-1" role="presentation" style="position: absolute; left: 694px; top: 443.203px; outline: none; transition-duration: 80ms;"><div role="presentation"><div class="c-menu" data-qa="menu" style="width: 250px;"><div class="c-menu__items_scroller"><div class="c-menu__items" data-qa="menu_items" role="menu" tabindex="-1" no-bootstrap="1"><div class="c-menu_item__li" data-qa="menu_item_button-wrapper"><button class="c-button-unstyled c-menu_item__button" type="button" id="menu-c9e49a96-fd13-4668-9317-9e4fc69be5bb-0" data-qa="menu_item_button" role="menuitem" tabindex="-1"><div class="c-menu_item__label"><div class="p-plain_text_element" data-qa="bk-plain_text_element"><span dir="auto">Option 1</span></div></div></button></div><div class="c-menu_item__li" data-qa="menu_item_button-wrapper"><button class="c-button-unstyled c-menu_item__button" type="button" id="menu-c9e49a96-fd13-4668-9317-9e4fc69be5bb-1" data-qa="menu_item_button" role="menuitem" tabindex="-1"><div class="c-menu_item__label"><div class="p-plain_text_element" data-qa="bk-plain_text_element"><span dir="auto">Option 2</span></div></div></button></div><div class="c-menu_item__li" data-qa="menu_item_button-wrapper"><button class="c-button-unstyled c-menu_item__button" type="button" id="menu-c9e49a96-fd13-4668-9317-9e4fc69be5bb-2" data-qa="menu_item_button" role="menuitem" tabindex="-1"><div class="c-menu_item__label"><div class="p-plain_text_element" data-qa="bk-plain_text_element"><span dir="auto">Option 3</span></div></div></button></div><div class="c-menu_item__li" data-qa="menu_item_button-wrapper"><button class="c-button-unstyled c-menu_item__button" type="button" id="menu-c9e49a96-fd13-4668-9317-9e4fc69be5bb-3" data-qa="menu_item_button" role="menuitem" tabindex="-1"><div class="c-menu_item__label"><div class="p-plain_text_element" data-qa="bk-plain_text_element"><span dir="auto">Option 4</span></div></div></button></div></div></div></div></div></div>
+
+    </div>
+</body>
+</html>
+ 
