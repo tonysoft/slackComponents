@@ -10,7 +10,7 @@
             </div>
         </div><style>
 * {
-    font-family: Slack-Lato, appleLogo, sans-serif; 
+    font-family: Slack-Lato, appleLogo, sans-serif;
 }
 </style>
 <link href="https://unpkg.com/tonysoft@1.55.21/css/rollup-slack_kit_base.css" rel="stylesheet" type="text/css">
