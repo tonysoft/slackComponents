@@ -31,18 +31,39 @@ function create_fragment(ctx) {
 	};
 }
 
+function readJSON() {
+	return { "hello": "there" };
+}
+
+function instance($$self, $$props, $$invalidate) {
+	return [readJSON];
+}
+
 class NestedX extends SvelteElement {
 	constructor(options) {
 		super();
-		init(this, { target: this.shadowRoot }, null, create_fragment, safe_not_equal, {});
+		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, { readJSON: 0 });
 
 		if (options) {
 			if (options.target) {
 				insert(options.target, this, options.anchor);
 			}
+
+			if (options.props) {
+				this.$set(options.props);
+				flush();
+			}
 		}
+	}
+
+	static get observedAttributes() {
+		return ["readJSON"];
+	}
+
+	get readJSON() {
+		return readJSON;
 	}
 }
 
-export default NestedX;
+export {NestedX};
 window.customElements.define('nestedx-component', NestedX);

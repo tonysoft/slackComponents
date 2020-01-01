@@ -16,11 +16,15 @@
                 height: 100%;
             }
         </style>
+    </head>
+
+    <body style="margin: 0;">
+        <slack-section markdown="**Test** :ghost:"></slack-section>
+        <markdown-slackified markdown="[here is ANOTHER an example](https://example.com)"></markdown-slackified>
         <script type="module">
             //import './js/download-component-bundle.js'
-            import "./svelte/js/slackify-markdown-bundle.js"
             import './svelte/slackSection.js'
-            var slackifyMarkdown = slackifySomeMarkdown;
+            import './svelte/markdownSlackified.js'
             const markdown = `
 # List of items
 
@@ -30,14 +34,45 @@
 
 [here is an example](https://example.com)
 `;
+
 var slackMarkdown = slackifyMarkdown(markdown);
+var sampleSlackified = `
+*Goals*
+
+•   Unit tested (1150+ tests at the moment, 79%+ coverage)
+•   Modular (~60 small <http://fabricjs.com/docs/|"classes", modules, mixins>)
+•   Cross-browser
+•   <https://github.com/kangax/fabric.js/wiki/Focus-on-speed|Fast>
+•   Encapsulated in one object
+•   No browser sniffing for critical functionality
+•   Runs under ES5 strict mode
+•   Runs on a server under <http://nodejs.org/|Node.js> (active stable releases and latest of current) (see <https://github.com/kangax/fabric.js/wiki/Fabric-limitations-in-node.js|Node.js limitations>)
+•   Follows <http://semver.org/|Semantic Versioning>
+`;
+var slackifiedObject = { test: sampleSlackified};
+var stringifiedSample = slackifiedObject.test;
 console.log(slackMarkdown);
 console.log(slackifyMarkdown("[here is an example](https://example.com)"));
-            
-        </script>
-    </head>
 
-    <body style="margin: 0;">
-        <slack-section/>
+            var slackSection = document.querySelector("slack-section");
+            slackSection.addEventListener('slackified', function(e) {
+                var response = e.detail;
+                console.log(response);
+            });
+            slackSection.addEventListener('markup', function(e) {
+                var response = e.detail;
+                console.log(response);
+            });
+            var markdownSlackified = document.querySelector("markdown-slackified");
+            markdownSlackified.addEventListener('slackified', function(e) {
+                var response = e.detail;
+                console.log(response);
+            });
+            setTimeout(function() {
+                var test = markdownSlackified.slackify("[here is ANOTHER an example](https://example.com) **Test** :blush:");
+                console.log("Returned: " + test);
+                //markdownSlackified.markdown = "[here is ANOTHER an example](https://example.com) **Test** :blush:"
+            }, 100);
+        </script>
     </body>
 </html>
