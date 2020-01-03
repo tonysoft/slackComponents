@@ -11,6 +11,7 @@ import {
 	insert,
 	noop,
 	safe_not_equal,
+	set_style,
 	space
 } from "./svelte/internal.js";
 import { createEventDispatcher, onMount } from "./svelte/svelte.js";
@@ -19,10 +20,11 @@ import {markdownSlackified} from "./markdownSlackified.js"
 import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.27/markdown-markup.js?module"
 
 function create_fragment(ctx) {
-	var div4, div3, div2, div1, div0, span, t0, link0, t1, link1, t2, link2;
+	var div7, div4, div3, div2, div1, div0, span, t0, div6, t2, div8, markdown_slackified, t3, markdown_markup, t4, link0, t5, link1, t6, link2;
 
 	return {
 		c() {
+			div7 = element("div");
 			div4 = element("div");
 			div3 = element("div");
 			div2 = element("div");
@@ -30,10 +32,18 @@ function create_fragment(ctx) {
 			div0 = element("div");
 			span = element("span");
 			t0 = space();
-			link0 = element("link");
-			t1 = space();
-			link1 = element("link");
+			div6 = element("div");
+			div6.innerHTML = `<button class="c-button c-button--outline c-button--small p-block_kit_button_element null--outline null--small" type="button" data-qa-block-id="l07=" data-qa-action-id="2JA2A"><div class="p-plain_text_element" data-qa="bk-plain_text_element"><span dir="auto">Button1</span></div></button>`;
 			t2 = space();
+			div8 = element("div");
+			markdown_slackified = element("markdown-slackified");
+			t3 = space();
+			markdown_markup = element("markdown-markup");
+			t4 = space();
+			link0 = element("link");
+			t5 = space();
+			link1 = element("link");
+			t6 = space();
 			link2 = element("link");
 			this.c = noop;
 			attr(span, "dir", "auto");
@@ -43,6 +53,10 @@ function create_fragment(ctx) {
 			attr(div3, "data-qa", "bk_section_block");
 			attr(div3, "class", "p-section_block p-section_block--no_top_margin");
 			attr(div4, "class", "p-block_kit_renderer__block_wrapper");
+			attr(div6, "class", "accessoryVisible accessoryHidden");
+			attr(div7, "class", "flexRow");
+			set_style(div7, "display", ctx.display);
+			set_style(div8, "display", "none");
 			attr(link0, "href", "https://unpkg.com/tonysoft@1.55.21/css/rollup-slack_kit_base.css");
 			attr(link0, "rel", "stylesheet");
 			attr(link0, "type", "text/css");
@@ -55,38 +69,65 @@ function create_fragment(ctx) {
 		},
 
 		m(target, anchor) {
-			insert(target, div4, anchor);
+			insert(target, div7, anchor);
+			append(div7, div4);
 			append(div4, div3);
 			append(div3, div2);
 			append(div2, div1);
 			append(div1, div0);
 			append(div0, span);
 			ctx.span_binding(span);
-			insert(target, t0, anchor);
-			insert(target, link0, anchor);
-			insert(target, t1, anchor);
-			insert(target, link1, anchor);
+			append(div7, t0);
+			append(div7, div6);
+			ctx.div6_binding(div6);
+			ctx.div7_binding(div7);
 			insert(target, t2, anchor);
+			insert(target, div8, anchor);
+			append(div8, markdown_slackified);
+			ctx.markdown_slackified_binding(markdown_slackified);
+			append(div8, t3);
+			append(div8, markdown_markup);
+			ctx.markdown_markup_binding(markdown_markup);
+			insert(target, t4, anchor);
+			insert(target, link0, anchor);
+			insert(target, t5, anchor);
+			insert(target, link1, anchor);
+			insert(target, t6, anchor);
 			insert(target, link2, anchor);
 		},
 
-		p: noop,
+		p(changed, ctx) {
+			if (changed.display) {
+				set_style(div7, "display", ctx.display);
+			}
+		},
+
 		i: noop,
 		o: noop,
 
 		d(detaching) {
 			if (detaching) {
-				detach(div4);
+				detach(div7);
 			}
 
 			ctx.span_binding(null);
+			ctx.div6_binding(null);
+			ctx.div7_binding(null);
 
 			if (detaching) {
-				detach(t0);
-				detach(link0);
-				detach(t1);
-				detach(link1);
 				detach(t2);
+				detach(div8);
+			}
+
+			ctx.markdown_slackified_binding(null);
+			ctx.markdown_markup_binding(null);
+
+			if (detaching) {
+				detach(t4);
+				detach(link0);
+				detach(t5);
+				detach(link1);
+				detach(t6);
 				detach(link2);
 			}
 		}
@@ -95,23 +136,48 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	
+
 	const dispatch = createEventDispatcher();
 
-    let markdownSlackifiedConverter = new markdownSlackified();
-    let markdownMarkupConverter = new MarkdownMarkup()
+    let markdownSlackifiedConverter;
+    let markdownMarkupConverter;
 
-    let { markdown } = $$props;
+    //const markdownSlackifiedConverter = new markdownSlackified();
+    //const markdownMarkupConverter = new MarkdownMarkup();
 
+    const blockKitJSON = {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": ""
+        }
+	}
+
+    let { markdown, display = "block", accessory } = $$props;
+
+    let mainContainer;
     let sectionMarkup;
+    let accessoryBlock;
 
     function markdownToMarkup() {
+        var blockKit = null;
         if (markdown) {
+            var parentComponent = mainContainer.parentNode.host;
+            var width = parentComponent.offsetWidth;
+            $$invalidate('mainContainer', mainContainer.style.width = parentComponent.style.width, mainContainer);
             var markup = markdownMarkupConverter.convertMarkdown(markdown);
-            $$invalidate('sectionMarkup', sectionMarkup.innerHTML = markup, sectionMarkup);
-            event("markup", markup);
+            if (display !== "none") {
+                $$invalidate('sectionMarkup', sectionMarkup.innerHTML = markup, sectionMarkup);
+            }
             var slackified = markdownSlackifiedConverter.slackify(markdown);
-            event("slackified", slackified);
+            if (slackified.lastIndexOf("\n") === (slackified.length - 1)) {
+                slackified = slackified.substring(0, slackified.length - 1);
+            }
+            blockKit = JSON.parse(JSON.stringify(blockKitJSON));
+            blockKit.text.text = slackified;
+			event("blockKit", blockKit);
         }
+        return blockKit;
     }
 
 	onMount(() => {
@@ -130,26 +196,69 @@ function instance($$self, $$props, $$invalidate) {
 		});
 	}
 
+	function div6_binding($$value) {
+		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+			$$invalidate('accessoryBlock', accessoryBlock = $$value);
+		});
+	}
+
+	function div7_binding($$value) {
+		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+			$$invalidate('mainContainer', mainContainer = $$value);
+		});
+	}
+
+	function markdown_slackified_binding($$value) {
+		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+			$$invalidate('markdownSlackifiedConverter', markdownSlackifiedConverter = $$value);
+		});
+	}
+
+	function markdown_markup_binding($$value) {
+		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+			$$invalidate('markdownMarkupConverter', markdownMarkupConverter = $$value);
+		});
+	}
+
 	$$self.$set = $$props => {
 		if ('markdown' in $$props) $$invalidate('markdown', markdown = $$props.markdown);
+		if ('display' in $$props) $$invalidate('display', display = $$props.display);
+		if ('accessory' in $$props) $$invalidate('accessory', accessory = $$props.accessory);
 	};
 
-	$$self.$$.update = ($$dirty = { markdown: 1 }) => {
+	$$self.$$.update = ($$dirty = { markdown: 1, accessory: 1, accessoryBlock: 1 }) => {
 		if ($$dirty.markdown) { if (markdown) {
                 markdownToMarkup();
         	} }
+		if ($$dirty.accessory || $$dirty.accessoryBlock) { if (accessory) {
+                accessoryBlock.classList.add("accessoryVisible");
+        	} }
 	};
 
-	return { markdown, sectionMarkup, span_binding };
+	return {
+		markdownSlackifiedConverter,
+		markdownMarkupConverter,
+		markdown,
+		display,
+		accessory,
+		mainContainer,
+		sectionMarkup,
+		accessoryBlock,
+		span_binding,
+		div6_binding,
+		div7_binding,
+		markdown_slackified_binding,
+		markdown_markup_binding
+	};
 }
 
 class slackSection extends SvelteElement {
 	constructor(options) {
 		super();
 
-		this.shadowRoot.innerHTML = `<style>*{font-family:Slack-Lato, appleLogo, sans-serif}</style>`;
+		this.shadowRoot.innerHTML = `<style>*{font-family:Slack-Lato, appleLogo, sans-serif}.accessoryHidden{display:none}.accessoryVisible{display:flex}.flexRow{display:flex;flex-direction:row;justify-content:space-between}</style>`;
 
-		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["markdown"]);
+		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["markdown", "display", "accessory"]);
 
 		if (options) {
 			if (options.target) {
@@ -164,7 +273,7 @@ class slackSection extends SvelteElement {
 	}
 
 	static get observedAttributes() {
-		return ["markdown"];
+		return ["markdown","display","accessory"];
 	}
 
 	get markdown() {
@@ -175,7 +284,25 @@ class slackSection extends SvelteElement {
 		this.$set({ markdown });
 		flush();
 	}
+
+	get display() {
+		return this.$$.ctx.display;
+	}
+
+	set display(display) {
+		this.$set({ display });
+		flush();
+	}
+
+	get accessory() {
+		return this.$$.ctx.accessory;
+	}
+
+	set accessory(accessory) {
+		this.$set({ accessory });
+		flush();
+	}
 }
 
-export default slackSection;
+export {slackSection};
 window.customElements.define('slack-section', slackSection);
