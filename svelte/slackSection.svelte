@@ -10,13 +10,9 @@
             </div>
         </div>
     </div>
-    <div bind:this={accessoryBlock} class="accessoryVisible accessoryHidden">
-        <button class="c-button c-button--outline c-button--small p-block_kit_button_element null--outline null--small" type="button" data-qa-block-id="l07=" data-qa-action-id="2JA2A">
-            <div class="p-plain_text_element" data-qa="bk-plain_text_element">
-                <span dir="auto">Button1</span>
-            </div>
-        </button>
-    </div>
+    {#if (section && section.accessory && (section.accessory.type === "button"))}
+        <slack-button class="accessory" label=":ghost:" value="TestButton" display=""></slack-button>
+    {/if}
 </div> 
 
 <div style="display: none;">
@@ -28,12 +24,10 @@
         font-family: Slack-Lato, appleLogo, sans-serif;
     }
 
-    .accessoryHidden {
-        display: none;
-    }
-
-    .accessoryVisible {
-        display: flex;
+    .accessory {
+        position: relative;
+        top: 5px;
+        margin-left: 10px;
     }
 
     .flexRow {
@@ -48,7 +42,8 @@
 <link href="https://unpkg.com/tonysoft@1.55.21/css/slackBlockKitBuilder.css" rel="stylesheet" type="text/css">
 <script>
 	import {markdownSlackified} from "./markdownSlackified.js"
-    import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.27/markdown-markup.js?module"
+	import {slackButton} from "./slackButton.js"
+    import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.47/markdown-markup.js?module"
 
 	const dispatch = createEventDispatcher();
 
@@ -68,11 +63,10 @@
 
     export let markdown;
     export let display = "block";
-    export let accessory;
+    export let section;
 
     let mainContainer;
     let sectionMarkup;
-    let accessoryBlock;
 
     function markdownToMarkup() {
         var blockKit = null;
@@ -80,7 +74,7 @@
             var parentComponent = mainContainer.parentNode.host;
             var width = parentComponent.offsetWidth;
             mainContainer.style.width = parentComponent.style.width;
-            var markup = markdownMarkupConverter.convertMarkdown(markdown);
+            var markup = markdownMarkupConverter.convertMarkdown(markdown, 18, 3);
             if (display !== "none") {
                 sectionMarkup.innerHTML = markup;
             }
@@ -99,8 +93,13 @@
         markdownToMarkup();
 	}
 
-	$: if (accessory) {
-        accessoryBlock.classList.add("accessoryVisible");
+	$: if (section) {
+        if (section.split) {
+            section = JSON.parse(section);
+        }
+        if ((section.type === "section") && section.text && section.text.text) {
+            markdown = section.text.text;
+        }
 	}
 
 	onMount(() => {

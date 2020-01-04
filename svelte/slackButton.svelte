@@ -25,7 +25,7 @@
 <link href="https://unpkg.com/tonysoft@1.55.21/css/slackBlockKit.css" rel="stylesheet" type="text/css">
 <link href="https://unpkg.com/tonysoft@1.55.21/css/slackBlockKitBuilder.css" rel="stylesheet" type="text/css">
 <script>
-    import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.27/markdown-markup.js?module"
+    import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.47/markdown-markup.js?module"
 
 	const dispatch = createEventDispatcher();
 
@@ -51,7 +51,7 @@
     function textToMarkup() {
         var blockKit = null;
         if (label) {
-            var markup = markdownMarkupConverter.convertMarkdown(label);
+            var markup = markdownMarkupConverter.convertMarkdown(label, 20, 1);
             if (display !== "none") {
                 markup = markup.replace("<p>", "");
                 markup = markup.replace("</p>", "");

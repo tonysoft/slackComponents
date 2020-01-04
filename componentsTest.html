@@ -22,13 +22,13 @@
     </head>
 
     <body style="margin: 20;">
-            <slack-section markdown="**Test** :ghost:" display="" style="width: 400px;"></slack-section>
-            <slack-button label="Button Test" value="TestButton" display=""></slack-button>
+            <slack-section markdownx="**Test** :ghost:" display="" style="width: 500px;"></slack-section>
+            
             <markdown-slackified markdown="[here is ANOTHER an example](https://example.com)"></markdown-slackified>
         <script type="module">
             //import './js/download-component-bundle.js'
             import './svelte/slackSection.js'
-            import './svelte/slackButton.js'
+            // import './svelte/slackButton.js'
             import './svelte/markdownSlackified.js'
             const markdown = `
 **List of items**
@@ -58,19 +58,34 @@ var slackifiedObject = { test: sampleSlackified};
 var stringifiedSample = slackifiedObject.test;
 console.log(slackMarkdown);
 console.log(slackifyMarkdown("[here is an example](https://example.com)"));
-
+            var sectionDef = {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "This is a mrkdwn section block :ghost: **this is bold**, and ~~this is crossed out~~. This is a mrkdwn section block :ghost: **this is bold**"
+                },
+                "accessory": {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Button",
+                        "emoji": true
+                    },
+                    "value": "click_me_123"
+                }
+            }
             var slackSection = document.querySelector("slack-section");
-            var slackButton = document.querySelector("slack-button");
+            // var slackButton = document.querySelector("slack-button");
             slackSection.addEventListener('blockKit', function(e) {
                 var response = e.detail;
                 console.log(JSON.stringify(response));
             });
-            slackButton.addEventListener('blockKit', function(e) {
-                var response = e.detail;
-                console.log(JSON.stringify(response));
-            });
-            slackSection.markdown = markdown;
-            slackSection.accessory = true;
+            // slackButton.addEventListener('blockKit', function(e) {
+            //     var response = e.detail;
+            //     console.log(JSON.stringify(response));
+            // });
+            //slackSection.markdown = markdown;
+            slackSection.section = sectionDef;
             var markdownSlackified = document.querySelector("markdown-slackified");
             markdownSlackified.addEventListener('slackified', function(e) {
                 var response = e.detail;

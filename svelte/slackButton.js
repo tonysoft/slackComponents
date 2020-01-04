@@ -16,7 +16,7 @@ import {
 } from "./svelte/internal.js";
 import { createEventDispatcher, onMount } from "./svelte/svelte.js";
 
-import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.27/markdown-markup.js?module"
+import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.47/markdown-markup.js?module"
 
 function create_fragment(ctx) {
 	var div1, button, div0, span, t0, div2, markdown_markup, t1, link0, t2, link1, t3, link2;
@@ -134,7 +134,7 @@ function instance($$self, $$props, $$invalidate) {
     function textToMarkup() {
         var blockKit = null;
         if (label) {
-            var markup = markdownMarkupConverter.convertMarkdown(label);
+            var markup = markdownMarkupConverter.convertMarkdown(label, 20, 1);
             if (display !== "none") {
                 markup = markup.replace("<p>", "");
                 markup = markup.replace("</p>", "");
@@ -244,5 +244,6 @@ class slackButton extends SvelteElement {
 		flush();
 	}
 }
+
 export {slackButton};
 window.customElements.define('slack-button', slackButton);

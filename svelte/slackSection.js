@@ -11,20 +11,49 @@ import {
 	insert,
 	noop,
 	safe_not_equal,
+	set_custom_element_data,
 	set_style,
 	space
 } from "./svelte/internal.js";
 import { createEventDispatcher, onMount } from "./svelte/svelte.js";
 
 import {markdownSlackified} from "./markdownSlackified.js"
-import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.27/markdown-markup.js?module"
+import {slackButton} from "./slackButton.js"
+import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.47/markdown-markup.js?module"
 
-function create_fragment(ctx) {
-	var div7, div4, div3, div2, div1, div0, span, t0, div6, t2, div8, markdown_slackified, t3, markdown_markup, t4, link0, t5, link1, t6, link2;
+// (13:4) {#if (section && section.accessory && (section.accessory.type === "button"))}
+function create_if_block(ctx) {
+	var slack_button;
 
 	return {
 		c() {
-			div7 = element("div");
+			slack_button = element("slack-button");
+			set_custom_element_data(slack_button, "class", "accessory");
+			set_custom_element_data(slack_button, "label", ":ghost:");
+			set_custom_element_data(slack_button, "value", "TestButton");
+			set_custom_element_data(slack_button, "display", "");
+		},
+
+		m(target, anchor) {
+			insert(target, slack_button, anchor);
+		},
+
+		d(detaching) {
+			if (detaching) {
+				detach(slack_button);
+			}
+		}
+	};
+}
+
+function create_fragment(ctx) {
+	var div5, div4, div3, div2, div1, div0, span, t0, t1, div6, markdown_slackified, t2, markdown_markup, t3, link0, t4, link1, t5, link2;
+
+	var if_block = ((ctx.section && ctx.section.accessory && (ctx.section.accessory.type === "button"))) && create_if_block(ctx);
+
+	return {
+		c() {
+			div5 = element("div");
 			div4 = element("div");
 			div3 = element("div");
 			div2 = element("div");
@@ -32,18 +61,17 @@ function create_fragment(ctx) {
 			div0 = element("div");
 			span = element("span");
 			t0 = space();
+			if (if_block) if_block.c();
+			t1 = space();
 			div6 = element("div");
-			div6.innerHTML = `<button class="c-button c-button--outline c-button--small p-block_kit_button_element null--outline null--small" type="button" data-qa-block-id="l07=" data-qa-action-id="2JA2A"><div class="p-plain_text_element" data-qa="bk-plain_text_element"><span dir="auto">Button1</span></div></button>`;
-			t2 = space();
-			div8 = element("div");
 			markdown_slackified = element("markdown-slackified");
-			t3 = space();
+			t2 = space();
 			markdown_markup = element("markdown-markup");
-			t4 = space();
+			t3 = space();
 			link0 = element("link");
-			t5 = space();
+			t4 = space();
 			link1 = element("link");
-			t6 = space();
+			t5 = space();
 			link2 = element("link");
 			this.c = noop;
 			attr(span, "dir", "auto");
@@ -53,10 +81,9 @@ function create_fragment(ctx) {
 			attr(div3, "data-qa", "bk_section_block");
 			attr(div3, "class", "p-section_block p-section_block--no_top_margin");
 			attr(div4, "class", "p-block_kit_renderer__block_wrapper");
-			attr(div6, "class", "accessoryVisible accessoryHidden");
-			attr(div7, "class", "flexRow");
-			set_style(div7, "display", ctx.display);
-			set_style(div8, "display", "none");
+			attr(div5, "class", "flexRow");
+			set_style(div5, "display", ctx.display);
+			set_style(div6, "display", "none");
 			attr(link0, "href", "https://unpkg.com/tonysoft@1.55.21/css/rollup-slack_kit_base.css");
 			attr(link0, "rel", "stylesheet");
 			attr(link0, "type", "text/css");
@@ -69,36 +96,46 @@ function create_fragment(ctx) {
 		},
 
 		m(target, anchor) {
-			insert(target, div7, anchor);
-			append(div7, div4);
+			insert(target, div5, anchor);
+			append(div5, div4);
 			append(div4, div3);
 			append(div3, div2);
 			append(div2, div1);
 			append(div1, div0);
 			append(div0, span);
 			ctx.span_binding(span);
-			append(div7, t0);
-			append(div7, div6);
-			ctx.div6_binding(div6);
-			ctx.div7_binding(div7);
-			insert(target, t2, anchor);
-			insert(target, div8, anchor);
-			append(div8, markdown_slackified);
+			append(div5, t0);
+			if (if_block) if_block.m(div5, null);
+			ctx.div5_binding(div5);
+			insert(target, t1, anchor);
+			insert(target, div6, anchor);
+			append(div6, markdown_slackified);
 			ctx.markdown_slackified_binding(markdown_slackified);
-			append(div8, t3);
-			append(div8, markdown_markup);
+			append(div6, t2);
+			append(div6, markdown_markup);
 			ctx.markdown_markup_binding(markdown_markup);
-			insert(target, t4, anchor);
+			insert(target, t3, anchor);
 			insert(target, link0, anchor);
-			insert(target, t5, anchor);
+			insert(target, t4, anchor);
 			insert(target, link1, anchor);
-			insert(target, t6, anchor);
+			insert(target, t5, anchor);
 			insert(target, link2, anchor);
 		},
 
 		p(changed, ctx) {
+			if ((ctx.section && ctx.section.accessory && (ctx.section.accessory.type === "button"))) {
+				if (!if_block) {
+					if_block = create_if_block(ctx);
+					if_block.c();
+					if_block.m(div5, null);
+				}
+			} else if (if_block) {
+				if_block.d(1);
+				if_block = null;
+			}
+
 			if (changed.display) {
-				set_style(div7, "display", ctx.display);
+				set_style(div5, "display", ctx.display);
 			}
 		},
 
@@ -107,27 +144,27 @@ function create_fragment(ctx) {
 
 		d(detaching) {
 			if (detaching) {
-				detach(div7);
+				detach(div5);
 			}
 
 			ctx.span_binding(null);
-			ctx.div6_binding(null);
-			ctx.div7_binding(null);
+			if (if_block) if_block.d();
+			ctx.div5_binding(null);
 
 			if (detaching) {
-				detach(t2);
-				detach(div8);
+				detach(t1);
+				detach(div6);
 			}
 
 			ctx.markdown_slackified_binding(null);
 			ctx.markdown_markup_binding(null);
 
 			if (detaching) {
-				detach(t4);
+				detach(t3);
 				detach(link0);
-				detach(t5);
+				detach(t4);
 				detach(link1);
-				detach(t6);
+				detach(t5);
 				detach(link2);
 			}
 		}
@@ -153,11 +190,10 @@ function instance($$self, $$props, $$invalidate) {
         }
 	}
 
-    let { markdown, display = "block", accessory } = $$props;
+    let { markdown, display = "block", section } = $$props;
 
     let mainContainer;
     let sectionMarkup;
-    let accessoryBlock;
 
     function markdownToMarkup() {
         var blockKit = null;
@@ -165,7 +201,7 @@ function instance($$self, $$props, $$invalidate) {
             var parentComponent = mainContainer.parentNode.host;
             var width = parentComponent.offsetWidth;
             $$invalidate('mainContainer', mainContainer.style.width = parentComponent.style.width, mainContainer);
-            var markup = markdownMarkupConverter.convertMarkdown(markdown);
+            var markup = markdownMarkupConverter.convertMarkdown(markdown, 18, 3);
             if (display !== "none") {
                 $$invalidate('sectionMarkup', sectionMarkup.innerHTML = markup, sectionMarkup);
             }
@@ -196,13 +232,7 @@ function instance($$self, $$props, $$invalidate) {
 		});
 	}
 
-	function div6_binding($$value) {
-		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
-			$$invalidate('accessoryBlock', accessoryBlock = $$value);
-		});
-	}
-
-	function div7_binding($$value) {
+	function div5_binding($$value) {
 		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
 			$$invalidate('mainContainer', mainContainer = $$value);
 		});
@@ -223,15 +253,20 @@ function instance($$self, $$props, $$invalidate) {
 	$$self.$set = $$props => {
 		if ('markdown' in $$props) $$invalidate('markdown', markdown = $$props.markdown);
 		if ('display' in $$props) $$invalidate('display', display = $$props.display);
-		if ('accessory' in $$props) $$invalidate('accessory', accessory = $$props.accessory);
+		if ('section' in $$props) $$invalidate('section', section = $$props.section);
 	};
 
-	$$self.$$.update = ($$dirty = { markdown: 1, accessory: 1, accessoryBlock: 1 }) => {
+	$$self.$$.update = ($$dirty = { section: 1, markdown: 1 }) => {
+		if ($$dirty.section) { if (section) {
+                if (section.split) {
+                    $$invalidate('section', section = JSON.parse(section));
+                }
+                if ((section.type === "section") && section.text && section.text.text) {
+                    $$invalidate('markdown', markdown = section.text.text);
+                }
+        	} }
 		if ($$dirty.markdown) { if (markdown) {
                 markdownToMarkup();
-        	} }
-		if ($$dirty.accessory || $$dirty.accessoryBlock) { if (accessory) {
-                accessoryBlock.classList.add("accessoryVisible");
         	} }
 	};
 
@@ -240,13 +275,11 @@ function instance($$self, $$props, $$invalidate) {
 		markdownMarkupConverter,
 		markdown,
 		display,
-		accessory,
+		section,
 		mainContainer,
 		sectionMarkup,
-		accessoryBlock,
 		span_binding,
-		div6_binding,
-		div7_binding,
+		div5_binding,
 		markdown_slackified_binding,
 		markdown_markup_binding
 	};
@@ -256,9 +289,9 @@ class slackSection extends SvelteElement {
 	constructor(options) {
 		super();
 
-		this.shadowRoot.innerHTML = `<style>*{font-family:Slack-Lato, appleLogo, sans-serif}.accessoryHidden{display:none}.accessoryVisible{display:flex}.flexRow{display:flex;flex-direction:row;justify-content:space-between}</style>`;
+		this.shadowRoot.innerHTML = `<style>*{font-family:Slack-Lato, appleLogo, sans-serif}.accessory{position:relative;top:5px;margin-left:10px}.flexRow{display:flex;flex-direction:row;justify-content:space-between}</style>`;
 
-		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["markdown", "display", "accessory"]);
+		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["markdown", "display", "section"]);
 
 		if (options) {
 			if (options.target) {
@@ -273,7 +306,7 @@ class slackSection extends SvelteElement {
 	}
 
 	static get observedAttributes() {
-		return ["markdown","display","accessory"];
+		return ["markdown","display","section"];
 	}
 
 	get markdown() {
@@ -294,12 +327,12 @@ class slackSection extends SvelteElement {
 		flush();
 	}
 
-	get accessory() {
-		return this.$$.ctx.accessory;
+	get section() {
+		return this.$$.ctx.section;
 	}
 
-	set accessory(accessory) {
-		this.$set({ accessory });
+	set section(section) {
+		this.$set({ section });
 		flush();
 	}
 }
