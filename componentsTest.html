@@ -22,7 +22,7 @@
     </head>
 
     <body style="margin: 20;">
-            <slack-section markdownx="**Test** :ghost:" display="" style="width: 500px;"></slack-section>
+            <slack-section markdownx="**Test** :ghost:" display="" style="widthx: 500px;"></slack-section>
             
             <markdown-slackified markdown="[here is ANOTHER an example](https://example.com)"></markdown-slackified>
         <script type="module">
@@ -62,7 +62,7 @@ console.log(slackifyMarkdown("[here is an example](https://example.com)"));
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "This is a mrkdwn section block :ghost: **this is bold**, and ~~this is crossed out~~. This is a mrkdwn section block :ghost: **this is bold**"
+                    "text": "This is a mrkdwn section block **this is bold**, and ~~this is crossed out~~. This is a mrkdwn section block :ghost: **this is bold**"
                 },
                 "accessory": {
                     "type": "button",
@@ -76,7 +76,7 @@ console.log(slackifyMarkdown("[here is an example](https://example.com)"));
             }
             var slackSection = document.querySelector("slack-section");
             // var slackButton = document.querySelector("slack-button");
-            slackSection.addEventListener('blockKit', function(e) {
+            slackSection.addEventListener('block', function(e) {
                 var response = e.detail;
                 console.log(JSON.stringify(response));
             });

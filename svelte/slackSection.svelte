@@ -10,9 +10,11 @@
             </div>
         </div>
     </div>
-    {#if (section && section.accessory && (section.accessory.type === "button"))}
-        <slack-button class="accessory" label=":ghost:" value="TestButton" display=""></slack-button>
-    {/if}
+	{#each sections as thisSection, i}
+        {#if (thisSection && thisSection.accessory && (thisSection.accessory.type === "button"))}
+            <slack-button on:block={buttonBlock} block={thisSection.accessory} class="accessory" display=""></slack-button>
+        {/if}
+    {/each}
 </div> 
 
 <div style="display: none;">
@@ -25,8 +27,6 @@
     }
 
     .accessory {
-        position: relative;
-        top: 5px;
         margin-left: 10px;
     }
 
@@ -65,6 +65,8 @@
     export let display = "block";
     export let section;
 
+    let sections = [];
+
     let mainContainer;
     let sectionMarkup;
 
@@ -73,7 +75,7 @@
         if (markdown) {
             var parentComponent = mainContainer.parentNode.host;
             var width = parentComponent.offsetWidth;
-            mainContainer.style.width = parentComponent.style.width;
+            mainContainer.style.width = parentComponent.style.width || "500px";
             var markup = markdownMarkupConverter.convertMarkdown(markdown, 18, 3);
             if (display !== "none") {
                 sectionMarkup.innerHTML = markup;
@@ -84,7 +86,7 @@
             }
             blockKit = JSON.parse(JSON.stringify(blockKitJSON));
             blockKit.text.text = slackified;
-			event("blockKit", blockKit);
+			event("block", blockKit);
         }
         return blockKit;
     }
@@ -100,6 +102,8 @@
         if ((section.type === "section") && section.text && section.text.text) {
             markdown = section.text.text;
         }
+        var sectionArray = [section];
+        sections = sectionArray;
 	}
 
 	onMount(() => {
@@ -111,4 +115,8 @@
 	function event(eventName, payload) {
         dispatch(eventName, payload);
 	}
+
+    function buttonBlock(event) {
+        console.log(event);
+    }
 </script>

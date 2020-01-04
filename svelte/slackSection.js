@@ -4,11 +4,14 @@ import {
 	append,
 	attr,
 	binding_callbacks,
+	destroy_each,
 	detach,
 	element,
+	empty,
 	flush,
 	init,
 	insert,
+	listen,
 	noop,
 	safe_not_equal,
 	set_custom_element_data,
@@ -21,26 +24,83 @@ import {markdownSlackified} from "./markdownSlackified.js"
 import {slackButton} from "./slackButton.js"
 import {MarkdownMarkup} from "https://unpkg.com/tonysoft@^1.55.47/markdown-markup.js?module"
 
-// (13:4) {#if (section && section.accessory && (section.accessory.type === "button"))}
+function get_each_context(ctx, list, i) {
+	const child_ctx = Object.create(ctx);
+	child_ctx.thisSection = list[i];
+	child_ctx.i = i;
+	return child_ctx;
+}
+
+// (14:8) {#if (thisSection && thisSection.accessory && (thisSection.accessory.type === "button"))}
 function create_if_block(ctx) {
-	var slack_button;
+	var slack_button, slack_button_block_value, dispose;
 
 	return {
 		c() {
 			slack_button = element("slack-button");
+			set_custom_element_data(slack_button, "block", slack_button_block_value = ctx.thisSection.accessory);
 			set_custom_element_data(slack_button, "class", "accessory");
-			set_custom_element_data(slack_button, "label", ":ghost:");
-			set_custom_element_data(slack_button, "value", "TestButton");
 			set_custom_element_data(slack_button, "display", "");
+			dispose = listen(slack_button, "block", buttonBlock);
 		},
 
 		m(target, anchor) {
 			insert(target, slack_button, anchor);
 		},
 
+		p(changed, ctx) {
+			if ((changed.sections) && slack_button_block_value !== (slack_button_block_value = ctx.thisSection.accessory)) {
+				set_custom_element_data(slack_button, "block", slack_button_block_value);
+			}
+		},
+
 		d(detaching) {
 			if (detaching) {
 				detach(slack_button);
+			}
+
+			dispose();
+		}
+	};
+}
+
+// (13:1) {#each sections as thisSection, i}
+function create_each_block(ctx) {
+	var if_block_anchor;
+
+	var if_block = ((ctx.thisSection && ctx.thisSection.accessory && (ctx.thisSection.accessory.type === "button"))) && create_if_block(ctx);
+
+	return {
+		c() {
+			if (if_block) if_block.c();
+			if_block_anchor = empty();
+		},
+
+		m(target, anchor) {
+			if (if_block) if_block.m(target, anchor);
+			insert(target, if_block_anchor, anchor);
+		},
+
+		p(changed, ctx) {
+			if ((ctx.thisSection && ctx.thisSection.accessory && (ctx.thisSection.accessory.type === "button"))) {
+				if (if_block) {
+					if_block.p(changed, ctx);
+				} else {
+					if_block = create_if_block(ctx);
+					if_block.c();
+					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+				}
+			} else if (if_block) {
+				if_block.d(1);
+				if_block = null;
+			}
+		},
+
+		d(detaching) {
+			if (if_block) if_block.d(detaching);
+
+			if (detaching) {
+				detach(if_block_anchor);
 			}
 		}
 	};
@@ -49,7 +109,13 @@ function create_if_block(ctx) {
 function create_fragment(ctx) {
 	var div5, div4, div3, div2, div1, div0, span, t0, t1, div6, markdown_slackified, t2, markdown_markup, t3, link0, t4, link1, t5, link2;
 
-	var if_block = ((ctx.section && ctx.section.accessory && (ctx.section.accessory.type === "button"))) && create_if_block(ctx);
+	let each_value = ctx.sections;
+
+	let each_blocks = [];
+
+	for (let i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+	}
 
 	return {
 		c() {
@@ -61,7 +127,11 @@ function create_fragment(ctx) {
 			div0 = element("div");
 			span = element("span");
 			t0 = space();
-			if (if_block) if_block.c();
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+
 			t1 = space();
 			div6 = element("div");
 			markdown_slackified = element("markdown-slackified");
@@ -105,7 +175,11 @@ function create_fragment(ctx) {
 			append(div0, span);
 			ctx.span_binding(span);
 			append(div5, t0);
-			if (if_block) if_block.m(div5, null);
+
+			for (let i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(div5, null);
+			}
+
 			ctx.div5_binding(div5);
 			insert(target, t1, anchor);
 			insert(target, div6, anchor);
@@ -123,15 +197,26 @@ function create_fragment(ctx) {
 		},
 
 		p(changed, ctx) {
-			if ((ctx.section && ctx.section.accessory && (ctx.section.accessory.type === "button"))) {
-				if (!if_block) {
-					if_block = create_if_block(ctx);
-					if_block.c();
-					if_block.m(div5, null);
+			if (changed.sections) {
+				each_value = ctx.sections;
+
+				let i;
+				for (i = 0; i < each_value.length; i += 1) {
+					const child_ctx = get_each_context(ctx, each_value, i);
+
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, child_ctx);
+					} else {
+						each_blocks[i] = create_each_block(child_ctx);
+						each_blocks[i].c();
+						each_blocks[i].m(div5, null);
+					}
 				}
-			} else if (if_block) {
-				if_block.d(1);
-				if_block = null;
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].d(1);
+				}
+				each_blocks.length = each_value.length;
 			}
 
 			if (changed.display) {
@@ -148,7 +233,9 @@ function create_fragment(ctx) {
 			}
 
 			ctx.span_binding(null);
-			if (if_block) if_block.d();
+
+			destroy_each(each_blocks, detaching);
+
 			ctx.div5_binding(null);
 
 			if (detaching) {
@@ -169,6 +256,10 @@ function create_fragment(ctx) {
 			}
 		}
 	};
+}
+
+function buttonBlock(event) {
+    console.log(event);
 }
 
 function instance($$self, $$props, $$invalidate) {
@@ -192,6 +283,8 @@ function instance($$self, $$props, $$invalidate) {
 
     let { markdown, display = "block", section } = $$props;
 
+    let sections = [];
+
     let mainContainer;
     let sectionMarkup;
 
@@ -200,7 +293,7 @@ function instance($$self, $$props, $$invalidate) {
         if (markdown) {
             var parentComponent = mainContainer.parentNode.host;
             var width = parentComponent.offsetWidth;
-            $$invalidate('mainContainer', mainContainer.style.width = parentComponent.style.width, mainContainer);
+            $$invalidate('mainContainer', mainContainer.style.width = parentComponent.style.width || "700px", mainContainer);
             var markup = markdownMarkupConverter.convertMarkdown(markdown, 18, 3);
             if (display !== "none") {
                 $$invalidate('sectionMarkup', sectionMarkup.innerHTML = markup, sectionMarkup);
@@ -211,7 +304,7 @@ function instance($$self, $$props, $$invalidate) {
             }
             blockKit = JSON.parse(JSON.stringify(blockKitJSON));
             blockKit.text.text = slackified;
-			event("blockKit", blockKit);
+			event("block", blockKit);
         }
         return blockKit;
     }
@@ -256,14 +349,16 @@ function instance($$self, $$props, $$invalidate) {
 		if ('section' in $$props) $$invalidate('section', section = $$props.section);
 	};
 
-	$$self.$$.update = ($$dirty = { section: 1, markdown: 1 }) => {
-		if ($$dirty.section) { if (section) {
+	$$self.$$.update = ($$dirty = { section: 1, sectionArray: 1, markdown: 1 }) => {
+		if ($$dirty.section || $$dirty.sectionArray) { if (section) {
                 if (section.split) {
                     $$invalidate('section', section = JSON.parse(section));
                 }
                 if ((section.type === "section") && section.text && section.text.text) {
                     $$invalidate('markdown', markdown = section.text.text);
                 }
+                var sectionArray = [section];
+                $$invalidate('sections', sections = sectionArray);
         	} }
 		if ($$dirty.markdown) { if (markdown) {
                 markdownToMarkup();
@@ -276,6 +371,7 @@ function instance($$self, $$props, $$invalidate) {
 		markdown,
 		display,
 		section,
+		sections,
 		mainContainer,
 		sectionMarkup,
 		span_binding,
@@ -289,7 +385,7 @@ class slackSection extends SvelteElement {
 	constructor(options) {
 		super();
 
-		this.shadowRoot.innerHTML = `<style>*{font-family:Slack-Lato, appleLogo, sans-serif}.accessory{position:relative;top:5px;margin-left:10px}.flexRow{display:flex;flex-direction:row;justify-content:space-between}</style>`;
+		this.shadowRoot.innerHTML = `<style>*{font-family:Slack-Lato, appleLogo, sans-serif}.accessory{margin-left:10px}.flexRow{display:flex;flex-direction:row;justify-content:space-between}</style>`;
 
 		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["markdown", "display", "section"]);
 

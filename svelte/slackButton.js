@@ -116,7 +116,7 @@ function instance($$self, $$props, $$invalidate) {
 
     let markdownMarkupConverter;
 
-    const blockKitJSON = {
+    let blockKitJSON = {
         "type": "button",
         "text": {
             "type": "plain_text",
@@ -126,7 +126,7 @@ function instance($$self, $$props, $$invalidate) {
         "value": ""
     }
 
-    let { label, value = "buttonClick", display = "block" } = $$props;
+    let { label, value = "buttonClick", display = "block", block } = $$props;
 
     let mainContainer;
     let sectionMarkup;
@@ -143,7 +143,7 @@ function instance($$self, $$props, $$invalidate) {
             blockKit = JSON.parse(JSON.stringify(blockKitJSON));
             blockKit.text.text = label;
             blockKit.value = value;
-			event("blockKit", blockKit);
+			event("block", blockKit);
         }
         return blockKit;
     }
@@ -174,9 +174,18 @@ function instance($$self, $$props, $$invalidate) {
 		if ('label' in $$props) $$invalidate('label', label = $$props.label);
 		if ('value' in $$props) $$invalidate('value', value = $$props.value);
 		if ('display' in $$props) $$invalidate('display', display = $$props.display);
+		if ('block' in $$props) $$invalidate('block', block = $$props.block);
 	};
 
-	$$self.$$.update = ($$dirty = { label: 1 }) => {
+	$$self.$$.update = ($$dirty = { block: 1, label: 1 }) => {
+		if ($$dirty.block) { if (block) {
+                if (block.split) {
+                    $$invalidate('block', block = JSON.parse(block));
+                }
+                blockKitJSON = block;
+                $$invalidate('label', label = block.text.text);
+                $$invalidate('value', value = block.value);
+        	} }
 		if ($$dirty.label) { if (label) {
                 textToMarkup();
         	} }
@@ -187,6 +196,7 @@ function instance($$self, $$props, $$invalidate) {
 		label,
 		value,
 		display,
+		block,
 		sectionMarkup,
 		span_binding,
 		markdown_markup_binding
@@ -199,7 +209,7 @@ class slackButton extends SvelteElement {
 
 		this.shadowRoot.innerHTML = `<style>*{font-family:Slack-Lato, appleLogo, sans-serif}.flexRow{display:flex;flex-direction:row;justify-content:space-between}</style>`;
 
-		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["label", "value", "display"]);
+		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["label", "value", "display", "block"]);
 
 		if (options) {
 			if (options.target) {
@@ -214,7 +224,7 @@ class slackButton extends SvelteElement {
 	}
 
 	static get observedAttributes() {
-		return ["label","value","display"];
+		return ["label","value","display","block"];
 	}
 
 	get label() {
@@ -241,6 +251,15 @@ class slackButton extends SvelteElement {
 
 	set display(display) {
 		this.$set({ display });
+		flush();
+	}
+
+	get block() {
+		return this.$$.ctx.block;
+	}
+
+	set block(block) {
+		this.$set({ block });
 		flush();
 	}
 }

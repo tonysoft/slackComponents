@@ -31,7 +31,7 @@
 
     let markdownMarkupConverter;
 
-    const blockKitJSON = {
+    let blockKitJSON = {
         "type": "button",
         "text": {
             "type": "plain_text",
@@ -44,6 +44,7 @@
     export let label;
     export let value = "buttonClick";
     export let display = "block";
+    export let block;
 
     let mainContainer;
     let sectionMarkup;
@@ -60,7 +61,7 @@
             blockKit = JSON.parse(JSON.stringify(blockKitJSON));
             blockKit.text.text = label;
             blockKit.value = value;
-			event("blockKit", blockKit);
+			event("block", blockKit);
         }
         return blockKit;
     }
@@ -74,6 +75,15 @@
             textToMarkup();
         });
 	});
+
+	$: if (block) {
+        if (block.split) {
+            block = JSON.parse(block);
+        }
+        blockKitJSON = block;
+        label = block.text.text;
+        value = block.value;
+	}
 
 	function event(eventName, payload) {
         dispatch(eventName, payload);
