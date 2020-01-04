@@ -22,7 +22,7 @@
     </head>
 
     <body style="margin: 20;">
-            <slack-section markdownx="**Test** :ghost:" display="" style="widthx: 500px;"></slack-section>
+            <slack-section display="" style="widthx: 500px;"></slack-section>
             
             <markdown-slackified markdown="[here is ANOTHER an example](https://example.com)"></markdown-slackified>
         <script type="module">
@@ -85,7 +85,7 @@ console.log(slackifyMarkdown("[here is an example](https://example.com)"));
             //     console.log(JSON.stringify(response));
             // });
             //slackSection.markdown = markdown;
-            slackSection.section = sectionDef;
+            slackSection.section = JSON.stringify(sectionDef);
             var markdownSlackified = document.querySelector("markdown-slackified");
             markdownSlackified.addEventListener('slackified', function(e) {
                 var response = e.detail;
