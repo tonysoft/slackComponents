@@ -37,7 +37,7 @@ function create_if_block(ctx) {
 			set_custom_element_data(slack_section, "section", slack_section_section_value = ctx.thisBlock);
 			set_custom_element_data(slack_section, "display", "");
 			set_style(slack_section, "width", ctx.width);
-			dispose = listen(slack_section, "block", blockDefinition);
+			dispose = listen(slack_section, "block", ctx.blockProcessed);
 		},
 
 		m(target, anchor) {
@@ -183,14 +183,12 @@ function create_fragment(ctx) {
 	};
 }
 
-function blockDefinition(event) {
-    console.log(event);
-}
-
 function instance($$self, $$props, $$invalidate) {
 	const dispatch = createEventDispatcher();
 
     let { display = "block", blocks = [] } = $$props;
+    let blocksProcessed = [];
+
 
     let mainContainer;
     let width = "300px";
@@ -202,6 +200,14 @@ function instance($$self, $$props, $$invalidate) {
             $$invalidate('width', width = $$invalidate('mainContainer', mainContainer.style.width = parentComponent.style.width || "500px", mainContainer));
         });
 	});
+
+    function blockProcessed(e) {
+        var block = e.detail;
+        blocksProcessed.push(block);
+        if (blocksProcessed.length === blocks.length) {
+            event("blocksProcessed", { blocks: blocksProcessed });
+        }
+    }
 
 	function event(eventName, payload) {
         dispatch(eventName, payload);
@@ -223,6 +229,7 @@ function instance($$self, $$props, $$invalidate) {
                 if (blocks.split) {
                     $$invalidate('blocks', blocks = JSON.parse(blocks));
                 }
+        
         	} }
 	};
 
@@ -231,6 +238,7 @@ function instance($$self, $$props, $$invalidate) {
 		blocks,
 		mainContainer,
 		width,
+		blockProcessed,
 		div_binding
 	};
 }
@@ -277,7 +285,6 @@ class slackBlocks extends SvelteElement {
 		flush();
 	}
 }
-
 
 export {slackBlocks};
 window.customElements.define('slack-blocks', slackBlocks);

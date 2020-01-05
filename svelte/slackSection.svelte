@@ -84,7 +84,7 @@
             if (slackified.lastIndexOf("\n") === (slackified.length - 1)) {
                 slackified = slackified.substring(0, slackified.length - 1);
             }
-            blockKit = JSON.parse(JSON.stringify(blockKitJSON));
+            blockKit = JSON.parse(JSON.stringify(section || blockKitJSON));
             blockKit.text.text = slackified;
 			event("block", blockKit);
         }

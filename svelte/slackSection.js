@@ -293,7 +293,7 @@ function instance($$self, $$props, $$invalidate) {
         if (markdown) {
             var parentComponent = mainContainer.parentNode.host;
             var width = parentComponent.offsetWidth;
-            $$invalidate('mainContainer', mainContainer.style.width = parentComponent.style.width || "700px", mainContainer);
+            $$invalidate('mainContainer', mainContainer.style.width = parentComponent.style.width || "500px", mainContainer);
             var markup = markdownMarkupConverter.convertMarkdown(markdown, 18, 3);
             if (display !== "none") {
                 $$invalidate('sectionMarkup', sectionMarkup.innerHTML = markup, sectionMarkup);
@@ -302,7 +302,7 @@ function instance($$self, $$props, $$invalidate) {
             if (slackified.lastIndexOf("\n") === (slackified.length - 1)) {
                 slackified = slackified.substring(0, slackified.length - 1);
             }
-            blockKit = JSON.parse(JSON.stringify(blockKitJSON));
+            blockKit = JSON.parse(JSON.stringify(section || blockKitJSON));
             blockKit.text.text = slackified;
 			event("block", blockKit);
         }

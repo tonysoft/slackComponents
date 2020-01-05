@@ -8,12 +8,14 @@
         if (json.split) {
             json = JSON.parse(json);
         }
+        merge();
 	}
 
 	$: if (data) {
         if (data.split) {
             data = JSON.parse(data);
         }
+        merge();
 	}
 
     export function merge(jsonIn, dataIn) {

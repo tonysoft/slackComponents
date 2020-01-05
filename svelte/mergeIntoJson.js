@@ -58,11 +58,13 @@ function instance($$self, $$props, $$invalidate) {
                 if (json.split) {
                     $$invalidate('json', json = JSON.parse(json));
                 }
+                merge();
         	} }
 		if ($$dirty.data) { if (data) {
                 if (data.split) {
                     $$invalidate('data', data = JSON.parse(data));
                 }
+                merge();
         	} }
 	};
 

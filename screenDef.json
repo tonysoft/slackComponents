@@ -1,0 +1,26 @@
+{
+    "header": [{
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": "**${project}**\n\n             Date: ${startDate}      Target: ${targetCompletion}\n\n"
+        },
+        "accessory": {
+            "type": "button",
+            "text": {
+                "type": "plain_text",
+                "text": ":question:",
+                "emoji": true
+            },
+            "value": "detail:${project}"
+        }
+    }],
+    "items": [{
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": "\n  :arrow_lower_right:      On: ${date}      Stage: **${stage}**      ${daysInStageWithAverage}\n\n"
+        }
+    }],
+    "footer": []
+}

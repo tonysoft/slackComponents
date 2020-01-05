@@ -58,7 +58,7 @@
                 }
             }];
             var slackBlocks = document.querySelector("slack-blocks");
-            slackBlocks.addEventListener('blocks', function(e) {
+            slackBlocks.addEventListener('blocksProcessed', function(e) {
                 var response = e.detail;
                 console.log(JSON.stringify(response));
             });

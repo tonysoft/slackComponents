@@ -1,7 +1,7 @@
 <div class="flexColumn" style="display: {display};" bind:this={mainContainer}>
 	{#each blocks as thisBlock, i}
         {#if (thisBlock && (thisBlock.type === "section"))}
-            <slack-section on:block={blockDefinition} section={thisBlock} display="" style="width: {width}"></slack-section>
+            <slack-section on:block={blockProcessed} section={thisBlock} display="" style="width: {width}"></slack-section>
         {/if}
     {/each}
 </div> 
@@ -18,6 +18,8 @@
 
     export let display = "block";
     export let blocks = [];
+    let blocksProcessed = [];
+
 
     let mainContainer;
     let width = "300px";
@@ -26,6 +28,7 @@
         if (blocks.split) {
             blocks = JSON.parse(blocks);
         }
+
 	}
 
 	onMount(() => {
@@ -36,11 +39,16 @@
         });
 	});
 
+    function blockProcessed(e) {
+        var block = e.detail;
+        blocksProcessed.push(block);
+        if (blocksProcessed.length === blocks.length) {
+            event("blocksProcessed", { blocks: blocksProcessed });
+        }
+    }
+
 	function event(eventName, payload) {
         dispatch(eventName, payload);
 	}
 
-    function blockDefinition(event) {
-        console.log(event);
-    }
 </script>
