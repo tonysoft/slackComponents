@@ -22,7 +22,7 @@
 
 
     let mainContainer;
-    let width = "300px";
+    export let width = "300px";
 
 	$: if (blocks) {
         if (blocks.split) {

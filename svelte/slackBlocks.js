@@ -191,7 +191,7 @@ function instance($$self, $$props, $$invalidate) {
 
 
     let mainContainer;
-    let width = "300px";
+    let { width = "300px" } = $$props;
 
 	onMount(() => {
         setTimeout(function() {
@@ -222,6 +222,7 @@ function instance($$self, $$props, $$invalidate) {
 	$$self.$set = $$props => {
 		if ('display' in $$props) $$invalidate('display', display = $$props.display);
 		if ('blocks' in $$props) $$invalidate('blocks', blocks = $$props.blocks);
+		if ('width' in $$props) $$invalidate('width', width = $$props.width);
 	};
 
 	$$self.$$.update = ($$dirty = { blocks: 1 }) => {
@@ -249,7 +250,7 @@ class slackBlocks extends SvelteElement {
 
 		this.shadowRoot.innerHTML = `<style>.flexColumn{display:flex;flex-direction:column}</style>`;
 
-		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["display", "blocks"]);
+		init(this, { target: this.shadowRoot }, instance, create_fragment, safe_not_equal, ["display", "blocks", "width"]);
 
 		if (options) {
 			if (options.target) {
@@ -264,7 +265,7 @@ class slackBlocks extends SvelteElement {
 	}
 
 	static get observedAttributes() {
-		return ["display","blocks"];
+		return ["display","blocks","width"];
 	}
 
 	get display() {
@@ -282,6 +283,15 @@ class slackBlocks extends SvelteElement {
 
 	set blocks(blocks) {
 		this.$set({ blocks });
+		flush();
+	}
+
+	get width() {
+		return this.$$.ctx.width;
+	}
+
+	set width(width) {
+		this.$set({ width });
 		flush();
 	}
 }
