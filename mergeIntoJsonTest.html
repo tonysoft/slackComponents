@@ -63,13 +63,12 @@
             var mergeIntoJson = document.querySelector("merge-into-json");
             mergeIntoJson.json = blockDef;
             mergeIntoJson.data = data;
-            var merged = mergeIntoJson.merge(blockDef, data);
+            mergeIntoJson.addEventListener('merged', function(e) {
+                var response = e.detail;
+                console.log(JSON.stringify(response));
+            });
+            var merged = mergeIntoJson.merge(/*blockDef, data*/);
             console.log(merged);
-            // slackBlocks.addEventListener('blocks', function(e) {
-            //     var response = e.detail;
-            //     console.log(JSON.stringify(response));
-            // });
-            // slackBlocks.blocks = blockDef;
         </script>
     </body>
 </html>

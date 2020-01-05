@@ -7,6 +7,7 @@ import {
 	noop,
 	safe_not_equal
 } from "./svelte/internal.js";
+import { createEventDispatcher } from "./svelte/svelte.js";
 
 function create_fragment(ctx) {
 	return {
@@ -22,21 +23,30 @@ function create_fragment(ctx) {
 	};
 }
 
-function merge(json, data) {
-    var jsonString = JSON.stringify(json);
-    for (var prop in data) {
-        var value = data[prop];
-        var subKey = "${" + prop + "}";
-        while (jsonString.indexOf(subKey) >= 0) {
-            jsonString = jsonString.replace(subKey, value);
-        }
-    }
-    var merged = JSON.parse(jsonString);
-    return merged;
-}
-
 function instance($$self, $$props, $$invalidate) {
-	let { json = {}, data = {} } = $$props;
+	const dispatch = createEventDispatcher();
+
+    let { json = {}, data = {} } = $$props;
+
+    function merge(jsonIn, dataIn) {
+        jsonIn = jsonIn || json;
+        dataIn = dataIn || data;
+        var jsonString = JSON.stringify(jsonIn);
+        for (var prop in dataIn) {
+            var value = dataIn[prop];
+            var subKey = "${" + prop + "}";
+            while (jsonString.indexOf(subKey) >= 0) {
+                jsonString = jsonString.replace(subKey, value);
+            }
+        }
+        var merged = JSON.parse(jsonString);
+        event("merged", merged);
+        return merged;
+    }
+
+	function event(eventName, payload) {
+        dispatch(eventName, payload);
+	}
 
 	$$self.$set = $$props => {
 		if ('json' in $$props) $$invalidate('json', json = $$props.json);
@@ -56,7 +66,7 @@ function instance($$self, $$props, $$invalidate) {
         	} }
 	};
 
-	return { json, data };
+	return { json, data, merge };
 }
 
 class mergeIntoJSON extends SvelteElement {
@@ -100,7 +110,7 @@ class mergeIntoJSON extends SvelteElement {
 	}
 
 	get merge() {
-		return merge;
+		return this.$$.ctx.merge;
 	}
 }
 
