@@ -13,7 +13,8 @@ import {
 	noop,
 	safe_not_equal,
 	set_custom_element_data,
-	set_style
+	set_style,
+	space
 } from "./svelte/internal.js";
 import { createEventDispatcher, onMount } from "./svelte/svelte.js";
 
@@ -21,26 +22,34 @@ import {slackBlocks} from "./slackBlocks.js"
 import {mergeIntoJSON} from "./mergeIntoJson.js"
 
 function create_fragment(ctx) {
-	var div, slack_blocks, dispose;
+	var div0, slack_blocks, t, div1, merge_into_json, dispose;
 
 	return {
 		c() {
-			div = element("div");
+			div0 = element("div");
 			slack_blocks = element("slack-blocks");
+			t = space();
+			div1 = element("div");
+			merge_into_json = element("merge-into-json");
 			this.c = noop;
 			set_custom_element_data(slack_blocks, "blocks", ctx.blocks);
 			set_custom_element_data(slack_blocks, "display", "");
 			set_style(slack_blocks, "width", ctx.width);
-			attr(div, "class", "flexColumn");
-			set_style(div, "display", ctx.display);
+			attr(div0, "class", "flexColumn");
+			set_style(div0, "display", ctx.display);
+			set_style(div1, "display", "none");
 			dispose = listen(slack_blocks, "blocksProcessed", ctx.blocksProcessed);
 		},
 
 		m(target, anchor) {
-			insert(target, div, anchor);
-			append(div, slack_blocks);
+			insert(target, div0, anchor);
+			append(div0, slack_blocks);
 			ctx.slack_blocks_binding(slack_blocks);
-			ctx.div_binding(div);
+			ctx.div0_binding(div0);
+			insert(target, t, anchor);
+			insert(target, div1, anchor);
+			append(div1, merge_into_json);
+			ctx.merge_into_json_binding(merge_into_json);
 		},
 
 		p(changed, ctx) {
@@ -53,7 +62,7 @@ function create_fragment(ctx) {
 			}
 
 			if (changed.display) {
-				set_style(div, "display", ctx.display);
+				set_style(div0, "display", ctx.display);
 			}
 		},
 
@@ -62,18 +71,21 @@ function create_fragment(ctx) {
 
 		d(detaching) {
 			if (detaching) {
-				detach(div);
+				detach(div0);
 			}
 
 			ctx.slack_blocks_binding(null);
-			ctx.div_binding(null);
+			ctx.div0_binding(null);
+
+			if (detaching) {
+				detach(t);
+				detach(div1);
+			}
+
+			ctx.merge_into_json_binding(null);
 			dispose();
 		}
 	};
-}
-
-function process() {
-    //slackBlocksElement.blocks = blocks;
 }
 
 function instance($$self, $$props, $$invalidate) {
@@ -88,6 +100,7 @@ function instance($$self, $$props, $$invalidate) {
 
     let mainContainer;
     let slackBlocksElement;
+    let merger;
     
     let width = "300px";
 
@@ -115,15 +128,44 @@ function instance($$self, $$props, $$invalidate) {
         dispatch(eventName, payload);
 	}
 
+    function process() {
+        var allBlocks = [];
+        var def = definition.header || [];
+        var dat = data.header || {};
+        if (def.length) {
+            allBlocks = allBlocks.concat(merger.merge(def, dat));
+        }
+        def = definition.items || []
+        if (def.length) {
+            var items = data.items || [];
+            items.forEach(function(item) {
+                var itemDef = JSON.parse(JSON.stringify(def));
+                allBlocks = allBlocks.concat(merger.merge(itemDef, item));
+            });
+        }
+        def = definition.footer || [];
+        if (def.length) {
+            dat = data.footer || {};
+            allBlocks = allBlocks.concat(merger.merge(def, dat));
+        }
+        $$invalidate('blocks', blocks = allBlocks);
+    }
+
 	function slack_blocks_binding($$value) {
 		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
 			$$invalidate('slackBlocksElement', slackBlocksElement = $$value);
 		});
 	}
 
-	function div_binding($$value) {
+	function div0_binding($$value) {
 		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
 			$$invalidate('mainContainer', mainContainer = $$value);
+		});
+	}
+
+	function merge_into_json_binding($$value) {
+		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+			$$invalidate('merger', merger = $$value);
 		});
 	}
 
@@ -151,7 +193,6 @@ function instance($$self, $$props, $$invalidate) {
                 if (blocks.split) {
                     $$invalidate('blocks', blocks = JSON.parse(blocks));
                 }
-                process();
         	} }
 	};
 
@@ -162,10 +203,12 @@ function instance($$self, $$props, $$invalidate) {
 		blocks,
 		mainContainer,
 		slackBlocksElement,
+		merger,
 		width,
 		blocksProcessed,
 		slack_blocks_binding,
-		div_binding
+		div0_binding,
+		merge_into_json_binding
 	};
 }
 

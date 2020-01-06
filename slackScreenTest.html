@@ -24,9 +24,14 @@
     <body style="margin: 20;">
         <slack-screen display="" style="width: 500px;"></slack-screen>
         <merge-into-json></merge-into-json>
+        <br/>
+        <br/>
+        <br/>
+        <json-svelte width="500" height="400" mode="text"><json-svelte/>
         <script type="module">
             import './svelte/slackScreen.js'
             import './svelte/mergeIntoJson.js'
+            import 'https://unpkg.com/tonysoft@1.55.18/svelte/testComponent.js';
 
             var data = {
                 "project": "Test Project"
@@ -67,7 +72,7 @@
                     return response.json();
                 })
                 .then((screenDef) => {
-                    //blockDef = screenDef;
+                    blockDef = screenDef;
                     fetchData();
                 });
             function fetchData() {
@@ -76,21 +81,21 @@
                         return response.json();
                     })
                     .then((screenData) => {
-                        //data = screenData;
+                        data = screenData;
                         test();
                     });
             }
             function test() {
-                var mergeIntoJson = document.querySelector("merge-into-json");
-                mergeIntoJson.json = blockDef;
-                mergeIntoJson.data = data;
-                mergeIntoJson.addEventListener('merged', function(e) {
+                var jsonEditor = document.querySelector("json-svelte");
+                var slackScreen = document.querySelector("slack-screen");
+                slackScreen.addEventListener('blocksProcessed', function(e) {
                     var response = e.detail;
                     console.log(JSON.stringify(response));
+                    console.log(response);
+                    jsonEditor.json = response;
                 });
-                var merged = mergeIntoJson.merge(/*blockDef, data*/);
-                var slackScreen = document.querySelector("slack-screen");
-                slackScreen.blocks = merged;
+                slackScreen.definition = blockDef;
+                slackScreen.data = data;
             }
         </script>
     </body>

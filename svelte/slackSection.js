@@ -259,7 +259,7 @@ function create_fragment(ctx) {
 }
 
 function buttonBlock(event) {
-    console.log(event);
+    //console.log(event);
 }
 
 function instance($$self, $$props, $$invalidate) {

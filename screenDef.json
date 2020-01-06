@@ -3,13 +3,13 @@
         "type": "section",
         "text": {
             "type": "mrkdwn",
-            "text": "**${project}**\n\n             Date: ${startDate}      Target: ${targetCompletion}\n\n"
+            "text": "**${project}**\n\n&nbsp;&nbsp;Date: ${startDate}      Target: ${targetCompletion}\n\n"
         },
         "accessory": {
             "type": "button",
             "text": {
                 "type": "plain_text",
-                "text": ":question:",
+                "text": "Details",
                 "emoji": true
             },
             "value": "detail:${project}"
@@ -19,7 +19,7 @@
         "type": "section",
         "text": {
             "type": "mrkdwn",
-            "text": "\n  :arrow_lower_right:      On: ${date}      Stage: **${stage}**      ${daysInStageWithAverage}\n\n"
+            "text": "\n&nbsp;&nbsp;:arrow_right:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On: ${date}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stage: **${stage}**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${daysInStageWithAverage}\n\n"
         }
     }],
     "footer": []

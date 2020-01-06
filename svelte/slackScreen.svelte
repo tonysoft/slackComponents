@@ -1,6 +1,9 @@
 <div class="flexColumn" style="display: {display};" bind:this={mainContainer}>
     <slack-blocks on:blocksProcessed={blocksProcessed} blocks={blocks} display="" style="width: {width}"  bind:this={slackBlocksElement}></slack-blocks>
 </div> 
+<div style="display: none;">
+    <merge-into-json bind:this={merger}></merge-into-json>
+</div>
 <style>
     .flexColumn {
         display: flex;
@@ -23,6 +26,7 @@
 
     let mainContainer;
     let slackBlocksElement;
+    let merger;
     
     let width = "300px";
 
@@ -50,7 +54,6 @@
         if (blocks.split) {
             blocks = JSON.parse(blocks);
         }
-        process();
 	}
 
 	onMount(() => {
@@ -72,7 +75,27 @@
 	}
 
     function process() {
-        //slackBlocksElement.blocks = blocks;
+        var allBlocks = [];
+        var def = definition.header || [];
+        var dat = data.header || {};
+        if (def.length) {
+            allBlocks = allBlocks.concat(merger.merge(def, dat));
+        }
+        def = definition.items || []
+        if (def.length) {
+            var items = data.items || [];
+            items.forEach(function(item) {
+                var itemDef = JSON.parse(JSON.stringify(def));
+                allBlocks = allBlocks.concat(merger.merge(itemDef, item));
+            });
+        }
+        def = definition.footer || [];
+        if (def.length) {
+            dat = data.footer || {};
+            allBlocks = allBlocks.concat(merger.merge(def, dat));
+        }
+        blocks = allBlocks;
+        event("blocksProcessed", blocks);
     }
 
 </script>
